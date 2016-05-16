@@ -53,7 +53,7 @@ var eventSchema = new schema({
 			required : true,
 			//ref : mongoose.model('User')
 		},
-		"event_id":{
+		event_id :{
 			type: String,
 		},
 		invitee_list : [invitees],

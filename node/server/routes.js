@@ -1,6 +1,7 @@
 var userSchema = require('./models/user-model'); 
 var eventSchema = require('./models/event-model');
-//var eventTrack 
+var appUrlSchema = require('./models/app-url-model'); 
+
 var idgen = require('idgen');
 
 module.exports = function(app){
@@ -155,6 +156,22 @@ module.exports = function(app){
 
      app.delete('/api/events/deleteAllEvents/', function(req, res){
         eventSchema.deleteAllEvents(req.body.phone_no, function(err, resp){
+             if(err)
+                res.send(err);
+            res.json(resp);
+        });
+     });
+
+     app.post('/api/appUrls', function(req, res){
+        appUrlSchema.addUrl(req.body, function(err, resp){
+            if(err)
+                res.send(err);
+            res.json(resp);
+        });
+    });
+
+     app.get('/api/appUrls/:appId', function(req, res){
+        appUrlSchema.getUrl(req.params.appId, function(err, resp){
              if(err)
                 res.send(err);
             res.json(resp);

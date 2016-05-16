@@ -27,7 +27,7 @@ app.use(bodyParser.json({type: 'application/vnd.api+json'})); // parse applicati
 app.use(bodyParser.urlencoded({'extended': 'true'})); // parse application/x-www-form-urlencoded
 app.use(methodOverride('X-HTTP-Method-Override')); // override with the X-HTTP-Method-Override header in the request
 
-require('./app/routes.js')(app);
+require('./server/routes.js')(app);
 
 app.listen(port);
 console.log("App listening on port " + port)

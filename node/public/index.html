@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+  </head>
+
+  <script type="text/javascript" src="https://connect.facebook.net/en_US/sdk.js"></script>
+  
+   <script type="text/javascript" src="lib/jquery.min.js"></script>
+
+  <script type="text/javascript" src="app.js"></script>
+
+  <script>
+    var fcManager;
+
+    function initProcess(){
+      var url = document.location.href;
+      var redirctUrl;
+      var pos = url.indexOf("?appUrl");
+      if (pos != -1) {
+        var urlData = url.substr(url.indexOf("="));
+        redirctUrl = urlData.substring(1);
+        //window.login.href = redirctUrl;
+
+        fcManager.registerClientUrl(redirctUrl);
+
+        fcManager.checkFbLoginStatus();
+
+      }
+    };
+
+    function checkLoginState(){
+      fcManager.checkFbLoginStatus();
+    };
+
+    window.fbAsyncInit = function() {
+      FB.init({
+        appId      : '629513553870331',
+        cookie     : true,  // enable cookies to allow the server to access 
+                            // the session
+        xfbml      : true,  // parse social plugins on this page
+        version    : 'v2.5' // use graph api version 2.5
+      });
+
+      fcManager = new friendCrumbs.api.fcManager();
+      initProcess();
+    };
+
+  </script>
+  
+  <body>
+    <fb:login-button onlogin="checkLoginState();"> <!--scope="public_profile,email"--> 
+    </fb:login-button>
+    <div id="fbLoginStatus">
+  </body>
+
+</html> 
