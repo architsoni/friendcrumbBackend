@@ -55,28 +55,28 @@ var friendCrumbs={
 				//       }
 				//     }
 				// );
-				FB.api(
-				  '/',
-				  'GET',
-				  {"fields":"name,members"},
-				  function(response) {
-				      console.log(response);
-				  }
-				);
-				FB.api("/"+userId+"/picture",function(response){
-					console.log(response);
-				});
-				//add url to db
-				// $.ajax({
-				//   type: "GET",
-				//   url: apiDomain + 'api/appUrls/'+self.redirectAppId,
-				//   success : function (res, status) {
-				//   	if(status == "success"){
-				//   		//alert(res.redirect_url);
-				//   		window.location.href = res.redirect_url + "?fbSyncDone=true";
-				//   	}
-				//   },
+				// FB.api(
+				//   '/',
+				//   'GET',
+				//   {"fields":"name,members"},
+				//   function(response) {
+				//       console.log(response);
+				//   }
+				// );
+				// FB.api("/"+userId+"/picture",function(response){
+				// 	console.log(response);
 				// });
+				add url to db
+				$.ajax({
+				  type: "GET",
+				  url: apiDomain + 'api/appUrls/'+self.redirectAppId,
+				  success : function (res, status) {
+				  	if(status == "success"){
+				  		//alert(res.redirect_url);
+				  		window.location.href = res.redirect_url + "?fbSyncDone=true";
+				  	}
+				  },
+				});
 				
 			};
 
