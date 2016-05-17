@@ -66,7 +66,7 @@ var friendCrumbs={
 				// FB.api("/"+userId+"/picture",function(response){
 				// 	console.log(response);
 				// });
-				add url to db
+				//add url to db
 				$.ajax({
 				  type: "GET",
 				  url: apiDomain + 'api/appUrls/'+self.redirectAppId,
