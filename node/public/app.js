@@ -48,36 +48,37 @@ var friendCrumbs={
 			    }
 			};
 			this.getProfileInfo = function(res){
+				var friendsImage = [];
 				var userId = res.authResponse.userID; // for accessToken res.authResponse.accessToken
-				// FB.api("/me/friends", function (response) {
-				//       if (response && !response.error) {
-				//         /* handle the result */
-				//       }
-				//     }
-				// );
-				// FB.api(
-				//   '/',
-				//   'GET',
-				//   {"fields":"name,members"},
-				//   function(response) {
-				//       console.log(response);
-				//   }
-				// );
+				//to get user name and profile pic
+				FB.api("/me?fields=name,id,picture,email",function(response){
+					console.log(response);
+				});
+				
+				//to get user's friends name and profile pic
+				FB.api("/me/friends?fields=name,id,picture", function (response) { //me/friends, //taggable_friends, invitable_friends
+			    	if (response && !response.error) {
+			        	var friends = response.data;
+			      	}
+				});
+				//graph api to get friends name & profile pic
+				//https://graph.facebook.com/me/friends?access_token={accessToken}&fields=name,id,picture
+
+				// sample code to get profile pic for any user, should send userId
 				// FB.api("/"+userId+"/picture",function(response){
 				// 	console.log(response);
 				// });
-				//add url to db
-				$.ajax({
-				  type: "GET",
-				  url: apiDomain + 'api/appUrls/'+self.redirectAppId,
-				  success : function (res, status) {
-				  	if(status == "success"){
-				  		//alert(res.redirect_url);
-				  		window.location.href = res.redirect_url + "?fbSyncDone=true";
-				  	}
-				  },
-				});
-				
+
+				// $.ajax({
+				//   type: "GET",
+				//   url: apiDomain + 'api/appUrls/'+self.redirectAppId,
+				//   success : function (res, status) {
+				//   	if(status == "success"){
+				//   		//alert(res.redirect_url);
+				//   		window.location.href = res.redirect_url + "?fbSyncDone=true";
+				//   	}
+				//   },
+				// });
 			};
 
 		}

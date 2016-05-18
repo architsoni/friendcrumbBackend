@@ -6,7 +6,7 @@ var invitees = new schema({
 	name : String,
 	//email : String,
 	status : String,
-	phone_no : String,
+	user_id : String,
 	_id : false,
 });
 
@@ -32,23 +32,23 @@ var eventSchema = new schema({
 				required : true
 			}
 		},
-		my_status : {
-			type : String
-		}, 
-		organiser : {
-			type : String,
-			required : true
-		},
-		organiser_email : {
-			type : String,
-			//required : true
-		},
+		// my_status : {
+		// 	type : String
+		// }, 
+		// organiser : {
+		// 	type : String,
+		// 	required : true
+		// },
+		// organiser_email : {
+		// 	type : String,
+		// 	//required : true
+		// },
 		event_date : {
 			type : String,//Date,
 			required : true,
 			//default : Date.now
 		},
-		phone_no : {
+		user_id : {
 			type : String, //schema.Types.ObjectId,
 			required : true,
 			//ref : mongoose.model('User')
@@ -65,101 +65,130 @@ var eventSchema = new schema({
 
 var event = module.exports = mongoose.model('Event',eventSchema);
 
-// eventSchema.virtual('event_id').get(function() {
-//     return this._id;
-// });
-
 /* CRUD Methods*/
 
-module.exports.getEventById  = function(phoneNo, eventId, callBack){
-	var req = {
-		event_id: eventId, 
-		phone_no: phoneNo
-	};
-	event.findOne(req, callBack);
-};
+module.exports = {
+	getEventById : function(userId, eventId, callBack){
+		var req = {
+			event_id: eventId, 
+			user_id: userId
+		};
+		event.findOne(req, callBack);
+	},
 
-module.exports.getAllEvents = function(phoneNo, callBack){
-	var req = {
-		phone_no: phoneNo
-	};
-	event.find(req, callBack);
-};
+	getAllEvents : function(userId, callBack){
+		var req = {
+			user_id: userId
+		};
+		event.find(req, callBack);
+	},
 
-module.exports.createEvent = function(eventObj, callBack){
-	event.create(eventObj, callBack);
-};
+	createEvent : function(eventObj, callBack){
+		event.create(eventObj, callBack);
+	},
 
-module.exports.updateEvent = function(eventObj, callBack){
-	event.update({event_id: eventObj.event_id, phone_no: eventObj.phone_no}, eventObj, callBack);
-};
+	updateEvent : function(eventObj, callBack){
+		event.update({event_id: eventObj.event_id, user_id: eventObj.user_id}, eventObj, callBack);
+	},
 
-module.exports.addEventToAttendeeList = function(eventObjt){
-	var inviteeList = eventObjt.invitee_list;
-	//handle the case when an attendee is not registerd for fc??
-	inviteeList.forEach(function(value, index){
-		var eventObj = JSON.parse(JSON.stringify(eventObjt)); //peculiar behavior.. after updating eventObjt, it is affecting in calling function also??
-		// var query = {
-		// 	event_id: eventObj.event_id,
-		// 	phone_no: value.phone_no
+	addEventToAttendeeList : function(eventObjt, callBack){
+		var inviteeList = eventObjt.invitee_list;
+		//handle the case when an attendee is not registerd for fc??
+		inviteeList.forEach(function(value, index){
+			var eventObj = JSON.parse(JSON.stringify(eventObjt)); //peculiar behavior.. after updating eventObjt, it is affecting in calling function also??
+			eventObj.user_id = value.user_id;
+			//create new document for that invitee
+			event.create(eventObj, function(err, evnt){
+				if((inviteeList.length -1) == (index)) {
+					var req = {
+						event_id: eventObjt.event_id, 
+						user_id:  eventObjt.user_id
+					};
+					event.findOne(req, callBack);
+				}
+			});
+		});
+	},
+
+	updateAttendeeEventList : function(eventObjt, callBack){
+		var inviteeList = eventObjt.invitee_list;
+		inviteeList.forEach(function(value, index){
+			var eventObj = JSON.parse(JSON.stringify(eventObjt));
+			eventObj.user_id = value.user_id;
+			event.update({event_id: eventObj.event_id, user_id: value.user_id}, eventObj, function(err, evnt){
+				if((inviteeList.length -1) == (index)) {
+					var req = {
+						event_id: eventObjt.event_id, 
+						user_id:  eventObjt.user_id
+					};
+					event.findOne(req, callBack);
+				}
+			});
+		});
+	},
+
+	deleteEvent:  function(request, callBack){
+		var eventId = request.event_id, userId = request.user_id;
+		var callBackResp = {};
+		var req = {
+			event_id : eventId,
+			user_id : userId
+		};
+		event.remove(req, function(err, evnt){
+			if(!err){
+				event.update({event_id: eventId, 'invitee_list.user_id' : userId}, {$set: {'invitee_list.$.status' : "DECLINED"}}, {multi: true}, function(err, resp){
+					if(err){
+						callBackResp.status = "";
+						callBackResp.msg = "failed to update the event status to invitees";
+					}
+					else{
+						callBackResp.status = "success";
+						callBackResp.msg = "";
+					}
+					callBack(callBackResp);
+				});
+			}
+			else{
+				callBackResp.status = "";
+				callBackResp.msg = "failed to decline the event";
+				callBack(callBackResp);
+			}
+		});
+	},
+
+	deleteAllEvents:  function(userId, callBack){
+		var req = {
+			user_id : userId
+		};
+		event.remove(req, callBack);
+	},
+
+	updateAttendeeStatus:  function(request, callBack){
+		var userId = request.user_id, eventId = request.event_id, eventStatus = request.status;
+		var callBackResp = {};
+		// var req = {
+		// 	event_id : request.event_id,
+		// 	user_id : request.user_id
 		// };
+		
+		//event.update({event_id: request.event_id}, {$set: { 'invitee_list.0.status' : request.status }}, {multi: true}, callBack); 
+		//event.update({event_id : request.event_id}, {$set: { 'invitee_list.$.status' : request.status }}, { invitee_list: { $elemMatch: { status: request.user_id } } }, {multi: true}, callBack);
 
-		// event.findOne(query, function(err, response){
-		// 	if(err)
-		// 		throw err;
-		// 	else{
-				eventObj.phone_no = value.phone_no; // update the phone number with invitee phone number
-				//create new document for that invitee
-				event.create(eventObj, function(err, evnt){});
-		// 	}
-		// });
+		event.update({event_id: eventId, 'invitee_list.user_id' : userId}, {$set: {'invitee_list.$.status' : eventStatus}}, {multi: true}, function(err, resp){
+			if(err){
+				callBackResp.status = "";
+				callBackResp.msg = "failed to update the event status to invitees";
+			}
+			else{
+				callBackResp.status = "success";
+				callBackResp.msg = "";
+			}
+			callBack(callBackResp);
+		});
+		
+	},
 
-	});
-	
-};
-
-module.exports.updateAttendeeEventList = function(eventObjt){
-	var inviteeList = eventObjt.invitee_list;
-	inviteeList.forEach(function(value, index){
-		var eventObj = JSON.parse(JSON.stringify(eventObjt));
-		eventObj.phone_no = value.phone_no; // update the phone number with invitee phone number
-		event.update({event_id: eventObj.event_id, phone_no: value.phone_no}, eventObj, function(err, evnt){});
-	});
-};
-
-module.exports.deleteEvent = function(eventId, callBack){
-	var req = {
-		event_id : request.event_id,
-		//phone_no : request.phoneNo
-	};
-	event.remove(req, callBack);
-};
-
-module.exports.deleteAllEvents = function(phoneNo, callBack){
-	var req = {
-		phone_no : phoneNo
-	};
-	event.remove(req, callBack);
-};
-
-module.exports.updateAttendeeStatus = function(request, callBack){
-	var phoneNo = request.phone_no, eventId = request.event_id, eventStatus = request.status;
-	// var req = {
-	// 	event_id : request.event_id,
-	// 	phone_no : request.phone_no
-	// };
-	
-	//event.update({event_id: request.event_id}, {$set: { 'invitee_list.0.status' : request.status }}, {multi: true}, callBack); 
-	//event.update({event_id : request.event_id}, {$set: { 'invitee_list.$.status' : request.status }}, { invitee_list: { $elemMatch: { status: request.phone_no } } }, {multi: true}, callBack);
-
-	event.update({event_id: eventId, 'invitee_list.phone_no' : phoneNo}, {$set: {'invitee_list.$.status' : eventStatus}}, {multi: true}, callBack);
-	
-};
-
-module.exports.clearAllEvents = function(callBack){
-	// var req = {
-	// 	_id: id
-	// };
-	//event.findByIdAndRemove(req, callBack);
-	event.remove({}, callBack);
-};
+	clearAllEvents:  function(callBack){
+		event.remove({}, callBack);
+	}
+}

@@ -32,9 +32,9 @@ var eventTrackingSchema = new schema({
 		type : String,
 		required : true
 	},
-	invitee_list[{
+	invitee_list : [{
 		name : String,
-		phone_no : String,
+		user_id : String,
 		position : []
 	},
 	]

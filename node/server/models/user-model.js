@@ -8,16 +8,24 @@ var userSchema = new schema({
 		type: String,
 		required: true
 	},
-	email: {
+	user_id: {
 		type: String,
 		required: true,
 		unique: true
 	}, 
-	phone_no: {
+	email_id:{
+		type: String,
+		unique: true
+	},
+	profile_pic:{
+		type : String
+	}
+	/*phone_no: {
 		type:  String,
 		required: true,
 		unique: true 
-	 }//,
+	 }*/
+	//,
 	// "_id":{
 	// 	type: String,
 	// 	required: true
@@ -42,42 +50,31 @@ var user = module.exports = mongoose.model('User',userSchema);
 
 /* CRUD Methods*/
 
-module.exports.getUserById  = function(id, callBack){
-	user.findById(id, callBack);
+module.exports = {
+	getUserById : function(userId, callBack){
+		user.findOne(userId, callBack);
+	},
+	getUsers : function(callBack){
+		user.find(callBack);
+	},
+	addUser : function(userObj, callBack){
+		user.create(userObj, callBack);
+	},
+	updateUser : function(userId, userObj, callBack){
+		var req = {
+			user_id: userId
+		};
+		user.findOneAndUpdate(req, userObj, callBack);
+	},
+	removeUser : function(userId, callBack){
+		var req = {
+			user_id: userId
+		};
+		//users.remove(req, callBack);
+		user.remove(req, callBack);
+	},
+	removeAllUsers : function(callBack){
+		user.remove({}, callBack);
+	}
 };
 
-module.exports.getUserByPhoneNo = function(phoneNo, callBack){
-	var req = {
-		phone: phoneNo
-	};
-	user.findOne(req, callBack);
-};
-
-var eventModel = require('./event-model'); 
-
-module.exports.getUsers = function(callBack){
-	user.find(callBack);
-};
-
-module.exports.addUser = function(userObj, callBack){
-	user.create(userObj, callBack);
-};
-
-module.exports.updateUser = function(id, userObj, callBack){
-	var req = {
-		_id: id
-	};
-	user.findOneAndUpdate(req, userObj, callBack);
-};
-
-module.exports.removeUser = function(id, callBack){
-	var req = {
-		_id: id
-	};
-	//users.remove(req, callBack);
-	user.findByIdAndRemove(req, callBack);
-};
-
-module.exports.removeAllUsers = function(callBack){
-	user.remove({}, callBack);
-}

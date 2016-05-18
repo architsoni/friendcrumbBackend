@@ -50,7 +50,7 @@
   </script>
   
   <body>
-    <fb:login-button onlogin="checkLoginState();"> <!--scope="public_profile,email"--> 
+    <fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();"> <!--scope="public_profile,email, user_friends"--> 
     </fb:login-button>
     <div id="fbLoginStatus">
   </body>
