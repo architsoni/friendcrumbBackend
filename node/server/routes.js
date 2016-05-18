@@ -1,7 +1,7 @@
 var userSchema = require('./models/user-model'); 
 var eventSchema = require('./models/event-model');
 var contactSchema = require('./models/contact-model');
-var appUrlSchema = require('./models/app-url-model'); 
+//var appUrlSchema = require('./models/app-url-model'); 
 
 var idgen = require('idgen');
 
@@ -28,17 +28,24 @@ module.exports = function(app){
     });
 
 	app.post('/api/users', function(req, res){
-        var userObj = req.body;
-        userSchema.addUser(userObj, function(err, user){
+         //everytime posting delete existing user
+        userSchema.removeUser(req.body.user_id, function(err, user){
             if(err)
                 res.send(err);
-            //res.json(user);
-            getAllUsers(res);
+            //then add the user
+            else{
+                var userObj = req.body;
+                userSchema.addUser(userObj, function(err, user){
+                    if(err)
+                        res.send(err);
+                    res.json(user);
+                    //getAllUsers(res);
+                });
+            }
         });
 	});
 
     /*Event related apis*/
-
     app.get('/api/events/:user_id', function(req, res){
         getAllEvents(req, res);
     });
@@ -84,15 +91,15 @@ module.exports = function(app){
      });
 
      //when attendees decline an event 
-     app.delete('/api/events/deleteEvent', function(req, res){
-        eventSchema.deleteEvent(req.body, function(err, resp){
-             if(err)
-                res.send(err);
-            res.json(resp);
-        });
-     });
+     // app.delete('/api/events/deleteEvent', function(req, res){
+     //    eventSchema.deleteEvent(req.body, function(err, resp){
+     //         if(err)
+     //            res.send(err);
+     //        res.json(resp);
+     //    });
+     // });
 
-     //when attendees accept an event
+     //when attendees accept/decline an event
      app.put('/api/events/updateEventStatus', function(req, res){
         eventSchema.updateAttendeeStatus(req.body, function(err, resp){
             if(err)
@@ -102,7 +109,7 @@ module.exports = function(app){
      });
 
      //app url related api's
-     app.post('/api/appUrls', function(req, res){
+     /*app.post('/api/appUrls', function(req, res){
         appUrlSchema.addAppUrl(req.body, function(err, resp){
             if(err)
                 res.send(err);
@@ -132,7 +139,7 @@ module.exports = function(app){
                 res.send(err);
             res.json(resp);
         });
-     });
+     });*/
 
      //contact related api's
      app.get('/api/contacts/:user_id', function(req, res){
@@ -191,11 +198,18 @@ module.exports = function(app){
             res.json(resp);
         });
      });
-    
+
      app.get('/api/users',function(req, res){
             getAllUsers(res);
      });
      
+     // app.delete('/api/appUrls/deleteAll/', function(req, res){
+     //    appUrlSchema.deleteAll(function(err, resp){
+     //        if(err)
+     //            res.send(err);
+     //        res.json(resp);
+     //    });
+     // });
 
     //  app.put('/api/users/:user_id',function(req, res){
     //     userSchema.updateUser(req.params._id, req.body, function(err, user){
@@ -206,13 +220,13 @@ module.exports = function(app){
     //     });
     // });
 
-    // app.delete('/api/users/:user_id', function(req, res){
-    //     userSchema.removeUser(req.params.user_id, function(err, user){
-    //         if(err)
-    //             res.send(err);
-    //         res.json(user);
-    //     });
-    // });
+    app.delete('/api/users/:user_id', function(req, res){
+        userSchema.removeUser(req.params.user_id, function(err, user){
+            if(err)
+                res.send(err);
+            res.json(user);
+        });
+    });
 
 };
 

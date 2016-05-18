@@ -25,5 +25,8 @@ module.exports = {
 			_id: id
 		};
 		appUrl.findByIdAndRemove(req, callBack);
+	},
+	deleteAll : function(callBack){
+		appUrl.remove({}, callBack);
 	}
 }

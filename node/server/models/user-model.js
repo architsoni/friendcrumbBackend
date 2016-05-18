@@ -15,7 +15,7 @@ var userSchema = new schema({
 	}, 
 	email_id:{
 		type: String,
-		unique: true
+		//unique: true
 	},
 	profile_pic:{
 		type : String

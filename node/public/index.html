@@ -5,9 +5,9 @@
     <meta charset="UTF-8">
   </head>
 
-  <script type="text/javascript" src="https://connect.facebook.net/en_US/sdk.js"></script>
-  
-   <script type="text/javascript" src="lib/jquery.min.js"></script>
+  <!-- <script type="text/javascript" src="https://connect.facebook.net/en_US/sdk.js"></script> -->
+  <script type="text/javascript" src="lib/fb_sdk.js"></script>
+  <script type="text/javascript" src="lib/jquery.min.js"></script>
 
   <script type="text/javascript" src="app.js"></script>
 
@@ -25,14 +25,15 @@
 
         fcManager.registerClientUrl(redirctUrl);
 
-        fcManager.checkFbLoginStatus();
+        //fcManager.checkFbLoginStatus();
+        fcManager.doFbLogin();
 
       }
     };
 
-    function checkLoginState(){
-      fcManager.checkFbLoginStatus();
-    };
+    // function checkLoginState(){
+    //   fcManager.checkFbLoginStatus();
+    // };
 
     window.fbAsyncInit = function() {
       FB.init({
@@ -45,13 +46,14 @@
 
       fcManager = new friendCrumbs.api.fcManager();
       initProcess();
+
     };
 
   </script>
   
   <body>
-    <fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();"> <!--scope="public_profile,email, user_friends"--> 
-    </fb:login-button>
+    <!-- <fb:login-button scope="public_profile,email,user_friends" onlogin="checkLoginState();"> 
+    </fb:login-button> -->
     <div id="fbLoginStatus">
   </body>
 
