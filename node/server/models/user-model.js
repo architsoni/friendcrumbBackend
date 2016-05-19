@@ -70,7 +70,6 @@ module.exports = {
 		var req = {
 			user_id: userId
 		};
-		//users.remove(req, callBack);
 		user.remove(req, callBack);
 	},
 	removeAllUsers : function(callBack){

@@ -2,6 +2,7 @@ var userSchema = require('./models/user-model');
 var eventSchema = require('./models/event-model');
 var contactSchema = require('./models/contact-model');
 //var appUrlSchema = require('./models/app-url-model'); 
+var eventTrackSchema = require('./models/event-track-model');
 
 var idgen = require('idgen');
 
@@ -168,6 +169,38 @@ module.exports = function(app){
 
      app.delete('/api/contacts', function(req, res){
         contactSchema.deleteContacts(req.body.user_id, function(err, resp){
+            if(err)
+                res.send(err);
+            res.json(resp);
+        });
+     });
+
+     app.post('/api/trackEvent', function(req, res){
+        eventTrackSchema.addTrackingEvent(req.body, function(err, resp){
+            if(err)
+                res.send(err);
+            res.json(resp);
+        });
+     });
+
+     app.put('/api/trackEvent', function(req, res){
+        eventTrackSchema.updatePosition(req.body, function(err, resp){
+            if(err)
+                res.send(err);
+            res.json(resp);
+        });
+     });
+
+     app.get('/api/trackEvent/:event_id', function(req, res){
+        eventTrackSchema.getTrackingEvent(req.params.event_id, function(err, resp){
+            if(err)
+                res.send(err);
+            res.json(resp);
+        });
+     });
+
+     app.delete('/api/trackEvent', function(req, res){
+        eventTrackSchema.removeTrackingEvent(req.body, function(err, resp){
             if(err)
                 res.send(err);
             res.json(resp);
