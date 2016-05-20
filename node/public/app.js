@@ -2,8 +2,9 @@ var friendCrumbs={
 	api : {
 		fcManager : function(){
 			var self = this;
-			var apiDomain = "http://localhost:8080";
-			self.redirectAppId = null;
+			var apiDomain = "http://192.168.2.68:8080";
+			// change apiDomain to "http://localhost:8080" for local testing;
+			self.redirectAppUrl = null;
 
 			this.doAjax = function(url, method, request, successCB, failureCB){
 				$.ajax({
@@ -23,13 +24,7 @@ var friendCrumbs={
 				});
 			};
 			this.registerClientUrl = function(url){
-				self.redirectAppId = url;
-				// var reqObj = {"redirect_url" : url};
-				// self.doAjax("/api/appUrls", "POST", reqObj, function(response){
-				// 	self.redirectAppId = response._id;
-				// }, function(response){
-				// 	//handle failure callback
-				// });
+				self.redirectAppUrl = url;
 			};
 			// this.checkFbLoginStatus = function(){
 			// 	 FB.getLoginStatus(function(response) {
@@ -101,20 +96,7 @@ var friendCrumbs={
 				});
 			};
 			this.redirectToApp = function(){
-				/*var reqUrl = "/api/appUrls/"+self.redirectAppId
-				self.doAjax(reqUrl, "GET", {}, function(resp){
-					//remove app url from db, and redirect to app
-					self.doAjax("/api/appUrl", "DELETE", {"app_id":resp._id}, function(res){
-						console.log("app url delete success");
-					},function(res){
-						//handle failure callback
-					});
-					window.location.href = resp.redirect_url + "?fbSyncDone=true";
-				},
-				function(resp){
-					//handle failure callback
-				});*/
-				window.location.href = self.redirectAppId + "?fbSyncDone=true";
+				window.location.href = self.redirectAppUrl + "?fbSyncDone=true";
 			};
 		}
 	}

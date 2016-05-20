@@ -54,7 +54,6 @@ module.exports = {
 	updatePosition : function(request, callBack){
 		var userId = request.user_id, eventId = request.event_id, userPos = request.position;
 		//var callBackResp = {};
-		var record = JSON.parse(JSON.stringify(request));
 		eventTrack.update({event_id: eventId, 'invitee_list.user_id' : userId}, {$set: {'invitee_list.$.position' : userPos}}, function(err, res){//{upsert: true}, {$addToSet: {'invitee_list' : request}}, {$push : {'invitee_list' : request}},
 			if(!err){
 				eventTrack.findOne({event_id: eventId}, function(error, resp){
