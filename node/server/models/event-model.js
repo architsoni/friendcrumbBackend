@@ -193,10 +193,6 @@ module.exports = {
 	}
 };
 
-// eventSchema.post('update', function(res1, res2){
-// 	console.log(res1);
-// 	console.log(res2);
-// });
 // eventSchema.post('save', function(res1, res2){
 // 	//console.log(res1);
 // 	//console.log(res2);

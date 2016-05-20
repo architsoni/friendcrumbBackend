@@ -13,6 +13,7 @@
     "morgan": "*",
     "body-parser": "*",
     "method-override": "*",
+	"socket.io": "*",
 	"idgen":"*"
   },
   "author": "",

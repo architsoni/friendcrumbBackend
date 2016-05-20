@@ -253,8 +253,8 @@ module.exports = function(app){
     //     });
     // });
 
-    app.delete('/api/users/:user_id', function(req, res){
-        userSchema.removeUser(req.params.user_id, function(err, user){
+    app.delete('/api/users', function(req, res){
+        userSchema.removeUser(req.body.user_id, function(err, user){
             if(err)
                 res.send(err);
             res.json(user);

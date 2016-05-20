@@ -1,5 +1,8 @@
 var express = require('express');
 var app = express();
+//var http = require('http').Server(app);
+//var io = require('socket.io')(http);
+
 var mongoose = require('mongoose'), bodyParser = require('body-parser');
 var morgan = require('morgan'), methodOverride = require('method-override');
 var config = require('./dbConfig/config');
@@ -9,16 +12,17 @@ var router = express.Router();
 
 mongoose.connect(config.remoteUrl);
 
-// var conn = mongoose.connection;
-
-// conn.on('connected', function(){
-// 	console.log("connected to mongo");
+//router-level middleware, this is executed for wevery connection to router 
+// router.use(function(req, res, next) {
+//     //console.log('Something is happening.');
+//     next(); // make sure we go to the next routes and don't stop here
 // });
 
-router.use(function(req, res, next) {
-    //console.log('Something is happening.');
-    next(); // make sure we go to the next routes and don't stop here
-});
+// io.on('connection', function(socket) {
+// 	socket.on('eventUpdated', function(event){
+// 		//
+// 	});
+// });
 
 //app.use(express.static(__dirname + '/public')); 		// set the static files location /public/img will be /img for users
 app.use(morgan('dev')); // log every request to the console

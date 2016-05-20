@@ -2,8 +2,8 @@ var friendCrumbs={
 	api : {
 		fcManager : function(){
 			var self = this;
-			var apiDomain = "http://192.168.2.68:8080";
-			// change apiDomain to "http://localhost:8080" for local testing;
+			var apiDomain =  "http://192.168.2.68:8080";
+			//var apiDomain = "http://localhost:8080"; //for local testing
 			self.redirectAppUrl = null;
 
 			this.doAjax = function(url, method, request, successCB, failureCB){

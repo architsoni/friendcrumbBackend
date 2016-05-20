@@ -52,7 +52,10 @@ var user = module.exports = mongoose.model('User',userSchema);
 
 module.exports = {
 	getUserById : function(userId, callBack){
-		user.findOne(userId, callBack);
+		var req = {
+			user_id: userId
+		};
+		user.findOne(req, callBack);
 	},
 	getUsers : function(callBack){
 		user.find(callBack);
