@@ -48,6 +48,10 @@ var eventSchema = new schema({
 			required : true,
 			//default : Date.now
 		},
+		event_time :{
+			type : String,//Date,
+			required : true
+		},
 		user_id : {
 			type : String, //schema.Types.ObjectId,
 			required : true,
